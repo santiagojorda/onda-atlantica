@@ -1,11 +1,11 @@
 ## Onda Atlantica (Server)
 
-run server 
+Run local server from onda-atlantica/sv/
 ```
 DEBUG=myappyapp:* npm start
 ```
 
-clean server port
+Clean local server port
 ```
 fuser -k 3000/tcp
 

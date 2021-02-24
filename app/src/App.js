@@ -40,11 +40,7 @@ function Callback(props) {
   const _code = props.code
 
   async function _fetchToken(){
-    const _response = await fetch(URL_SERVER+"callback?code="+_code, {
-      mode: 'no-cors',
-      
-    })
-      .then(response => response.json())
+    const _response = await fetch(URL_SERVER+"callback?code="+_code)
     return _response
   }
 

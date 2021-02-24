@@ -20,9 +20,7 @@ const isEmpty = (data) => {
 }
 
 authCtrl.getToken = async (req, res, next) => {
-
     var code = req.query.code || null;
-
     if (code === null){
         res.send('Spotify code is empty.');
     }
@@ -44,19 +42,7 @@ authCtrl.getToken = async (req, res, next) => {
             if (error && response.statusCode !== 200) {
                 res.send("there has been an access token error: " + error);
             }
-            var access_token = body.access_token,
-                refresh_token = body.refresh_token;
-
-            request.post({
-                url: 'http://localhost:3000/spoty/getProfile',
-                form: {
-                    access_token: access_token,
-                    refresh_token: refresh_token
-                },
-                json: true
-            }, (error, response, body) => {
-                res.send(body);
-            });
+            res.send(response)
         });
     }
 

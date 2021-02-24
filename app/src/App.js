@@ -1,3 +1,4 @@
+import {useEffect} from 'react'
 import ThemeProvider from "./components/theme/ThemeProvider";
 import Header from './components/header/Header'
 import { Route, Switch, useLocation } from "react-router-dom";
@@ -38,22 +39,21 @@ export default function App() {
 function Callback(props) {
   
   const _code = props.code
-
-  async function _fetchToken(){
-    const _response = await fetch(URL_SERVER+"callback?code="+_code)
-    return _response
-  }
-
-  function _getToken(){
-    console.log(_fetchToken())
-  }
   
+  useEffect(() => {
+    async function _fetchToken(){
+      let _url = URL_SERVER+"callback?code="+_code
+      const _response = await fetch(_url).then(response => response.json()).then(data => console.log(data.body))
+      return _response
+    }
+  
+    console.log(_fetchToken())
+  }, [])
 
   return (
     <div>
       the code is: {_code}
       <hr/>
-      {_getToken()}
     </div>
   )
 }

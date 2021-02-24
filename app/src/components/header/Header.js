@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import {useTheme, useThemeToggler} from '../theme/ThemeProvider'
 import './header.sass'
 
@@ -9,7 +10,9 @@ export default function Header() {
 
     function _renderBrand(){
         return (
-            <h1>Onda Atlantica</h1>
+            <Link to="/">
+                <h1>Onda Atlantica</h1>
+            </Link>
         )
     }
 

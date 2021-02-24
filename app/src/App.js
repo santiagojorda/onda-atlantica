@@ -6,6 +6,8 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+const URL_SERVER = "http://localhost:4000/spoty/"
+
 export default function App() {
   
   let query = useQuery()
@@ -17,7 +19,7 @@ export default function App() {
       <Switch>
         <Route exact path="/auth">
           { () => {
-            window.location.href = 'http://localhost:4000/spoty/auth'
+            window.location.href = URL_SERVER+'auth'
             return false
             }
           }
@@ -33,14 +35,29 @@ export default function App() {
   );
 }
 
-
 function Callback(props) {
   
   const _code = props.code
+
+  async function _fetchToken(){
+    const _response = await fetch(URL_SERVER+"callback?code="+_code, {
+      mode: 'no-cors',
+      
+    })
+      .then(response => response.json())
+    return _response
+  }
+
+  function _getToken(){
+    console.log(_fetchToken())
+  }
   
+
   return (
     <div>
       the code is: {_code}
+      <hr/>
+      {_getToken()}
     </div>
   )
 }

@@ -1,61 +1,34 @@
-import {useEffect} from 'react'
-import ThemeProvider from "./components/theme/ThemeProvider";
 import Header from './components/header/Header'
-import { Route, Switch, useLocation } from "react-router-dom";
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
+import { Route, Switch } from "react-router-dom";
 
-const URL_SERVER = "http://localhost:4000/spoty/"
+import Player from './components/spotify/player/Player'
+import LogInCallback from './components/spotify/LogInCallback';
+import Auth from './components/spotify/Auth'
 
-export default function App() {
-  
-  let query = useQuery()
+import ThemeProvider from "./components/theme/ThemeProvider";
+import SpotifyProvider from "./components/spotify/SpotifyProvider";
+
+export default function App() {  
 
   return (
     <ThemeProvider>
-      <Header />
+      <SpotifyProvider>
+        <Header />
 
-      <Switch>
-        <Route exact path="/auth">
-          { () => {
-            window.location.href = URL_SERVER+'auth'
-            return false
-            }
-          }
+        <Switch>
+          <Route exact path="/auth">
+            <Auth />
+          </Route>
+          <Route exact path="/callback">
+            <LogInCallback/>
+          </Route>
 
-        </Route>
-        <Route exact path="/callback">
-          <Callback code={query.get("code")} />
-        </Route>
-
-      </Switch>
-
+          <Route exact path="/rep">
+            <Player />
+          </Route>
+        </Switch>
+      </SpotifyProvider>
     </ThemeProvider>
   );
 }
-
-function Callback(props) {
-  
-  const _code = props.code
-  
-  useEffect(() => {
-    async function _fetchToken(){
-      let _url = URL_SERVER+"callback?code="+_code
-      const _response = await fetch(_url).then(response => response.json()).then(data => console.log(data.body))
-      return _response
-    }
-  
-    console.log(_fetchToken())
-  }, [])
-
-  return (
-    <div>
-      the code is: {_code}
-      <hr/>
-    </div>
-  )
-}
-
-

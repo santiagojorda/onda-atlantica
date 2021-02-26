@@ -7,12 +7,15 @@ const AUTH_API = 'https://accounts.spotify.com/authorize?',
       TOKEN_URI = 'https://accounts.spotify.com/api/token',
       USER_URI = 'https://api.spotify.com/v1/me';
 
-const SCOPES_API = ''; 
+const SCOPES_API = 'streaming user-read-email user-read-private'; 
 
 const authCtrl = {};
 
 authCtrl.auth = async (req, res, next) => {
-    res.redirect(AUTH_API+"client_id="+CLIENT_ID+"&response_type=code&redirect_uri="+REDIRECT_URI);
+    res.redirect(AUTH_API+
+        "client_id="+CLIENT_ID+
+        "&response_type=code&redirect_uri="+REDIRECT_URI+
+        "&scope="+SCOPES_API);
 };
 
 const isEmpty = (data) => {

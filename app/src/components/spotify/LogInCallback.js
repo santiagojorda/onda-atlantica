@@ -3,7 +3,6 @@ import { Redirect, useLocation } from "react-router-dom";
 
 import {useSpotifyManager} from './SpotifyProvider'
 
-
 function useQuery() {
     return new URLSearchParams(useLocation().search);
 }  

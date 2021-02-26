@@ -20,6 +20,7 @@ export default function App() {
           <Route exact path="/auth">
             <Auth />
           </Route>
+
           <Route exact path="/callback">
             <LogInCallback/>
           </Route>
@@ -27,6 +28,7 @@ export default function App() {
           <Route exact path="/rep">
             <Player />
           </Route>
+        
         </Switch>
       </SpotifyProvider>
     </ThemeProvider>

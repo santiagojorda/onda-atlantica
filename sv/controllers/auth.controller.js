@@ -24,10 +24,9 @@ const isEmpty = (data) => {
 
 authCtrl.getToken = async (req, res, next) => {
     var code = req.query.code || null;
-    if (code === null){
-        res.send('Spotify code is empty.');
-    }
-    else { 
+    var refresh = req.query.refresh || null
+
+    if (code !== null){
         var data = {
             url: TOKEN_URI,
             form: {
@@ -42,12 +41,30 @@ authCtrl.getToken = async (req, res, next) => {
         };
 
         request.post(data, (error, response, body) => {
-            if (error && response.statusCode !== 200) {
-                res.send("there has been an access token error: " + error);
-            }
             res.send(response)
         });
     }
+    else if (refresh !== null){
+        var data = {
+            url: TOKEN_URI,
+            form: {
+                refresh_token: refresh,
+                grant_type: 'refresh_token'
+            },
+            headers: {
+                'Authorization': 'Basic ' + Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')
+            },
+            json: true
+        };
+
+        request.post(data, (error, response, body) => {
+            res.send(response)
+        });
+    }
+
+    else 
+        res.send('no se encontro ningun parametro en la url')
+
 
 };
 

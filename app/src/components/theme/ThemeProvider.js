@@ -4,7 +4,6 @@ import themes from './themes'
 const ThemeContext = React.createContext();
 const ThemeTogglerContext = React.createContext();
 
-
 export function useTheme(){
     return useContext(ThemeContext)
 }

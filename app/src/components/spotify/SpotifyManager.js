@@ -8,8 +8,10 @@ export default class SpotifyManager{
     spotyStorage = new SpotifyStorageManager()
     isLogged = false
 
-    getAuthorization(){
-        window.location.href = URL_SERVER_AUTH
+    async getAuthorization(){
+        return new Promise( () => {
+            window.location.href = URL_SERVER_AUTH
+        })
     }
 
     _isSuccessfulResponse(_res){
@@ -55,33 +57,34 @@ export default class SpotifyManager{
         return this._fetchTokenFunction(_url, this._saveNewAccessTokenInStorage.bind(this))
     }
     
-
-    _getNewToken(){
+    async _getNewToken(){
         if (this._thereIsRefreshToken())
-           return this._fetchNewTokenWithRefreshToken()
+            return this._fetchNewTokenWithRefreshToken()
+        
+        //this function doesnt return a promise. this is a bad smell
         else
-            return this.getAuthorization()
+            return await this.getAuthorization()
     }
 
     _tokenHasExpired(){
         const _expirationDate = this.spotyStorage.getTokenExpirationDate()
         const _dateNow = Date.now()
-        if(_expirationDate >= _dateNow )
+        if(_expirationDate >= _dateNow && _expirationDate != null)
             return false
         return true
     }
 
     getAccessToken(){
-        return new Promise( resolve => {
-            // hay que contemplar el caso de que no este logueado
-            if (this._tokenHasExpired())
-                this._getNewToken()
-            resolve(this.spotyStorage.getAccessToken())
-
-
-        //else
-            //getNewToken()
-        })
+        if (this._tokenHasExpired()){
+            return this._getNewToken()
+                .then( () => this.spotyStorage.getAccessToken() ) 
+        }
+        else {
+            return new Promise( resolve => {
+                resolve(this.spotyStorage.getAccessToken())
+            })
+        }
+    
     }
 
 }

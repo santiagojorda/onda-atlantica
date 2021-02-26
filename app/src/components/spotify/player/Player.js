@@ -10,13 +10,19 @@ export default function Player() {
     const spotyManager = useSpotifyManager()
 
     function _initializeWebPlayback(){
-      return spotyManager.getAccessToken()
+      return spotyManager
+        .getAccessToken()
         .then((token)=> {
+          console.log('token recibido: ' + token)
           webPlaybackInstance = new window.Spotify.Player({
             name: PLAYER_NAME,
             getOAuthToken: callback => {callback(token)},
             volume: 0.5
-          });
+          })
+          
+        })
+        .catch( err => {
+          console.error('There was an error getting an Access Token when Spotify Player was initialized: ' + err)
         })
     }
 
@@ -53,12 +59,13 @@ export default function Player() {
 
     function _handleScriptLoad() {
       window.onSpotifyWebPlaybackSDKReady = () => {
-          _initializeWebPlayback().then( () => {
-            _handlePlayerErrors()
-            _handlePlayerStatusUpdates()
-            _handlePlayerReady()
-            _handlePlayerConnect()
-          })
+          _initializeWebPlayback()
+            .then( () => {
+              _handlePlayerErrors()
+              _handlePlayerStatusUpdates()
+              _handlePlayerReady()
+              _handlePlayerConnect()
+            })
       }
     }
     
@@ -69,6 +76,7 @@ export default function Player() {
       return () => {
         if(webPlaybackInstance !== null){
           _handlePlayerDisconnect()
+          // eslint-disable-next-line react-hooks/exhaustive-deps
           webPlaybackInstance = null
         }
       }

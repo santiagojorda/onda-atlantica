@@ -21,12 +21,19 @@ export default function LogInCallback() {
           setWasLogged(true)
         })
         .catch(err => console.error(err))
-
+   
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+      
+    function _renderRedirect(){
+      if(wasLogged)
+        return <Redirect to='/rep' />
+      return <h1>Callback</h1>
+    }
 
     return (
       <div>
-        {wasLogged && <Redirect to='/rep' /> || <h1>Callback</h1>}
+        {_renderRedirect()}
       </div>
     )
 

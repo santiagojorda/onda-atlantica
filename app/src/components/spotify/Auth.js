@@ -7,6 +7,7 @@ export default function Auth() {
 
     useEffect(() => {
         spoty.getAuthorization()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     
     return (

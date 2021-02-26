@@ -9,7 +9,7 @@ export function useSpotifyManager(){
 
 export default function SpotifyProvider(props) {
     
-    const spoty = new SpotifyManager
+    const spoty = new SpotifyManager()
     
     return (
         <SpotifyManagerContext.Provider value={spoty}>

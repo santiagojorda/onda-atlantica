@@ -1,110 +1,103 @@
-import {useEffect} from 'react'
 import importScript from '../../../common/importScript'
-import {useSpotifyManager} from '../SpotifyProvider'
-import './player.sass'
+
 const PLAYER_NAME = 'Onda Atlantica'
 
-export default function Player() {
+export default class Player {
 
-    let webPlaybackInstance = null
-    const spotyManager = useSpotifyManager()
+    constructor(spotyManager){
+      this.spotyManager = spotyManager
+      this.webPlaybackInstance = null
+    }
 
-    function _initializeWebPlayback(){
-      return spotyManager
+    initialize(){
+      importScript('https://sdk.scdn.co/spotify-player.js')
+        .then( () => this._handleScriptLoad())
+        .catch( err => console.error(err))
+    }
+
+    _handleScriptLoad() {
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        this._initializeWebPlayback()
+            .then( () => {
+              this._handlePlayerErrors()
+              this._handlePlayerStatusUpdates()
+              this._handlePlayerReady()
+              this._handlePlayerConnect()
+            })
+      }
+    }
+
+    _initializeWebPlayback(){
+      return this.spotyManager
         .getAccessToken()
         .then((token)=> {
-          console.log('token recibido: ' + token)
-          webPlaybackInstance = new window.Spotify.Player({
+          this.webPlaybackInstance = new window.Spotify.Player({
             name: PLAYER_NAME,
             getOAuthToken: callback => {callback(token)},
             volume: 0.5
           })
-          
         })
         .catch( err => {
           console.error('There was an error getting an Access Token when Spotify Player was initialized: ' + err)
         })
     }
 
-    function _handlePlayerErrors(){
-      webPlaybackInstance.on('initialization_error', ({ message }) => { console.error(message); });
-      webPlaybackInstance.on('authentication_error', ({ message }) => { console.error(message); });
-      webPlaybackInstance.on('account_error', ({ message }) => { console.error(message); });
-      webPlaybackInstance.on('playback_error', ({ message }) => { console.error(message); });
+    _handlePlayerErrors(){
+      this.webPlaybackInstance.on('initialization_error', ({ message }) => { console.error(message); });
+      this.webPlaybackInstance.on('authentication_error', ({ message }) => { console.error(message); });
+      this.webPlaybackInstance.on('account_error', ({ message }) => { console.error(message); });
+      this.webPlaybackInstance.on('playback_error', ({ message }) => { console.error(message); });
     }
 
-    function _handlePlayerStatusUpdates(){
-      webPlaybackInstance.on('player_state_changed', state => { 
+    _handlePlayerStatusUpdates(){
+      this.webPlaybackInstance.on('player_state_changed', state => { 
         console.log(state);
       });
     }
 
-    function _handlePlayerReady(){
-      webPlaybackInstance.on('ready', ({ device_id }) => {
+    _handlePlayerReady(){
+      this.webPlaybackInstance.on('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id); 
       }); 
     }
 
-    function _handlePlayerConnect(){
-      webPlaybackInstance.connect().then( () => {
+    _handlePlayerConnect(){
+      this.webPlaybackInstance.connect().then( () => {
         console.log('player is connected')
       })
     }
 
-    function _handlePlayerDisconnect(){
-      webPlaybackInstance.disconnect().then( () => {
-        console.log('player was disconnected')
-      })
-    }
+    // function _handlePlayerDisconnect(){
+    //   webPlaybackInstance.disconnect().then( () => {
+    //     console.log('player was disconnected')
+    //   })
+    // }
 
-    function _handleScriptLoad() {
-      window.onSpotifyWebPlaybackSDKReady = () => {
-          _initializeWebPlayback()
-            .then( () => {
-              _handlePlayerErrors()
-              _handlePlayerStatusUpdates()
-              _handlePlayerReady()
-              _handlePlayerConnect()
-            })
-      }
-    }
+
     
-    useEffect( () => {
-      importScript('https://sdk.scdn.co/spotify-player.js')
-        .then( () =>  _handleScriptLoad())
-        .catch( err => console.error('mounting spotify player script error: ' + err))
-      return () => {
-        if(webPlaybackInstance !== null){
-          _handlePlayerDisconnect()
-          // eslint-disable-next-line react-hooks/exhaustive-deps
-          webPlaybackInstance = null
-        }
-      }
-    }, [])
+    // useEffect( () => {
+    //   return () => {
+    //     if(webPlaybackInstance !== null){
+    //       _handlePlayerDisconnect()
+    //       // eslint-disable-next-line react-hooks/exhaustive-deps
+    //       webPlaybackInstance = null
+    //     }
+    //   }
+    // }, [])
 
+    // let isPlaying = false
 
-    function _resume() {
-        webPlaybackInstance.togglePlay();
-    }
+    
 
-    return (
-        <div className='player'>
-            <div className="container">
-              <div className="row align-items-center">
-                <div className="col-4">
-                  <button onClick={_resume}>play</button>
-                </div>
-              </div>
-            </div>
-        </div>
-    )
+    // function renderButtonResume() {
+    //     isPlaying = !isPlaying
+    //     webPlaybackInstance.togglePlay();
+    //     if(isPlaying)
+    //       return <FontAwesomeIcon icon={faPause} />
+    //     return <FontAwesomeIcon icon={faPlay} />
+    // }
+
 }
-
-
-
-
-
-
 
 
                 // const play = ({

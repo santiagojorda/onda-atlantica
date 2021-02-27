@@ -5,6 +5,7 @@ const { auth, getToken, getProfile } = require('../controllers/auth.controller')
 
 router.post('/getProfile', getProfile)
 router.get('/getToken', getToken)
+// router.get('/getCurrentPlayback', getCurrentPlayback)
 router.use('/auth',auth);
 
 module.exports = router;

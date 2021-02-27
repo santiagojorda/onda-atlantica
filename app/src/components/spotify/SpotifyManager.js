@@ -1,4 +1,8 @@
-import {URL_SERVER_AUTH, URL_SERVER_GET_TOKEN} from '../../common/constants'
+import { 
+    URL_SERVER_AUTH,
+    URL_SERVER_GET_TOKEN,
+    URL_SERVER_PLAYER
+} from '../../common/constants'
 import SpotifyStorageManager from './SpotifyStorageManager'
 
 const HTTP_SUCCESSFUL_RESPONSE = 200
@@ -30,12 +34,13 @@ export default class SpotifyManager{
         this.spotyStorage.saveAccessToken(access_token, expiration)
     }
 
-    _fetchTokenFunction(_url, _callback){
+    _fetchFunction(_url, _callback){
         return fetch(_url)
             .then(res => res.json())
             .then(data => {
-                if(this._isSuccessfulResponse(data))
+                if(this._isSuccessfulResponse(data)){
                     _callback(data)
+                }
                 else
                     throw data.body.error_description
             })
@@ -48,13 +53,13 @@ export default class SpotifyManager{
 
     authorizeCallback(_spotifyCode){        
         const _url = URL_SERVER_GET_TOKEN+"?code="+_spotifyCode
-        return this._fetchTokenFunction(_url, this._saveNewTokensInStorage.bind(this))
+        return this._fetchFunction(_url, this._saveNewTokensInStorage.bind(this))
     }
 
     _fetchNewTokenWithRefreshToken(){
         const _refreshToken = this.spotyStorage.getRefreshToken()
         const _url = URL_SERVER_GET_TOKEN+"?refresh="+_refreshToken
-        return this._fetchTokenFunction(_url, this._saveNewAccessTokenInStorage.bind(this))
+        return this._fetchFunction(_url, this._saveNewAccessTokenInStorage.bind(this))
     }
     
     async _getNewToken(){
@@ -85,6 +90,12 @@ export default class SpotifyManager{
             })
         }
     
+    }
+
+    getCurrentPlaybackData(){
+        const _accessToken = this.spotyStorage.getAccessToken()
+        const _url = URL_SERVER_PLAYER+"?access_token="+_accessToken
+        return this._fetchFunction(_url)
     }
 
 }

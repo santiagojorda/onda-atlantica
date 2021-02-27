@@ -5,7 +5,8 @@ const AUTH_API = 'https://accounts.spotify.com/authorize?',
       CLIENT_SECRET = '26596c9d788a410d88dce1a3836bff19',
       REDIRECT_URI = 'http://localhost:3000/callback',
       TOKEN_URI = 'https://accounts.spotify.com/api/token',
-      USER_URI = 'https://api.spotify.com/v1/me';
+      USER_URI = 'https://api.spotify.com/v1/me',
+      PLAYER_URI = 'https://api.spotify.com/v1/me/player';
 
 const SCOPES_API = 'streaming user-read-email user-read-private'; 
 
@@ -69,8 +70,8 @@ authCtrl.getToken = async (req, res, next) => {
 };
 
 authCtrl.getProfile = async (req, res, next) => {
-    var access_token = req.body.access_token,
-        refresh_token = req.body.refresh_token;
+    var access_token = req.body.access_token;
+
     var data = {
         url: USER_URI,
         headers: {
@@ -86,6 +87,28 @@ authCtrl.getProfile = async (req, res, next) => {
         res.send(body);
     })
 }
+
+// authCtrl.getCurrentPlayback = async (req, res, next) => {
+//     var access_token = req.body.access_token;
+
+//     var data = {
+//         url: PLAYER_URI,
+//         form:{
+//             grant_type: 'refresh_token'
+//         }
+//         headers: {
+//             'Authorization': 'Bearer ' + access_token,
+//         },
+//         json: true
+//     };
+
+//     request.get(data, (error, response, body)=> {
+//         if (error && response.statusCode !== 200) {
+//             res.send("there has been an player get data error: " + error);
+//         }
+//         res.send(body);
+//     })
+// }
   
 
 module.exports = authCtrl;

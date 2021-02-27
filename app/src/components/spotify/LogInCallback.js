@@ -27,7 +27,7 @@ export default function LogInCallback() {
       
     function _renderRedirect(){
       if(wasLogged)
-        return <Redirect to='/rep' />
+        return <Redirect to='/' />
       return <h1>Callback</h1>
     }
 

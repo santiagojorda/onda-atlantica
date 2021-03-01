@@ -4,9 +4,10 @@ const PLAYER_NAME = 'Onda Atlantica'
 
 export default class Player {
 
-    constructor(spotyManager){
+    constructor(spotyManager, getChangeDataToComponent){
       this.spotyManager = spotyManager
       this.webPlaybackInstance = null
+      this.getChangeDataToComponent = getChangeDataToComponent
     }
 
     initialize(){
@@ -50,15 +51,15 @@ export default class Player {
     }
 
     _handlePlayerStatusUpdates(){
-      this.webPlaybackInstance.on('player_state_changed', state => { 
-        console.log(state);
-      });
+      this.webPlaybackInstance.addListener('player_state_changed', state => { 
+        this.getChangeDataToComponent(state)
+      })
     }
 
     _handlePlayerReady(){
       this.webPlaybackInstance.on('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id); 
-      }); 
+      })
     }
 
     _handlePlayerConnect(){
@@ -67,35 +68,27 @@ export default class Player {
       })
     }
 
-    // function _handlePlayerDisconnect(){
-    //   webPlaybackInstance.disconnect().then( () => {
-    //     console.log('player was disconnected')
-    //   })
-    // }
+    _removeListener(){
+      console.log('se elimno ' +this.webPlaybackInstance.removeListener('player_state_changed', state => { 
+        console.log('se elimino listener');
+      })) 
+    }
 
+    resume(){
+      this._removeListener()
+      this.webPlaybackInstance.resume()
+        .then(() => {
+          console.log('Resumed!');
+        })
+    }
 
-    
-    // useEffect( () => {
-    //   return () => {
-    //     if(webPlaybackInstance !== null){
-    //       _handlePlayerDisconnect()
-    //       // eslint-disable-next-line react-hooks/exhaustive-deps
-    //       webPlaybackInstance = null
-    //     }
-    //   }
-    // }, [])
-
-    // let isPlaying = false
-
-    
-
-    // function renderButtonResume() {
-    //     isPlaying = !isPlaying
-    //     webPlaybackInstance.togglePlay();
-    //     if(isPlaying)
-    //       return <FontAwesomeIcon icon={faPause} />
-    //     return <FontAwesomeIcon icon={faPlay} />
-    // }
+    pause(){
+      this._removeListener()
+      this.webPlaybackInstance.pause()
+        .then(() => {
+          console.log('paused!');
+        })
+    }
 
 }
 

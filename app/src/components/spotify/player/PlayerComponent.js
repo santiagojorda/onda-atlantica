@@ -7,25 +7,38 @@ import './player.sass'
 export default function PlayerComponent(){
 
     const [spotyManager,] = useState(useSpotifyManager())
-    const [player,] = useState(new Player(spotyManager))
+    const [player,] = useState(new Player(spotyManager, onStateChange))
+    const [isPlaying, setIsPlaying] = useState(false)
+    const [actualState, setActualState] = useState(true) 
 
+    
     useEffect(() => {
         player.initialize()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    function onStateChange(_actualState){
+        setActualState(_actualState)
+        setIsPlaying(!_actualState.paused)
+    }
+
+    function _onClick() {
+        if(isPlaying)
+            player.pause()
+        else
+            player.resume()
+        setIsPlaying(!isPlaying)
+    }
+
+    function _renderButton(text){
+        return <h1 onClick={_onClick}>{text}</h1>
+    }
+
     return (
         <div className='player'>
-            <div className="container">
-                <div className="row align-items-center">
-                    <div className="col-4"></div>
-                    
-                    <div className="col-4">
-                        {/* <button className='resume-btn' onClick={resume}> boton </button> */}
-                    </div>
-                    
-                    <div className="col-4"></div>
-                </div>
-            </div>
+            {isPlaying 
+                ? _renderButton('pause')
+                : _renderButton('resume')
+            }
         </div>
     )
     

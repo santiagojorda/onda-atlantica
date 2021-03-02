@@ -1,18 +1,49 @@
 
 
+///  ===============
+///  Main containers
+///  ===============
+
 .player 
-    width: 100%
+    text-size-adjust: 100%
+    width: 100vw
     position: fixed
     bottom: 0
     z-index: 9999
-    
-    .resume-btn
-        text-decoration: none
-        cursor: pointer
-        display: inline-block
-        height: auto
+    box-shadow: 0 1px 5px rgba(0,0,0,0.50)
+
+    .row
+        display: flex
+        align-items: center
+
+
+    .col-4
+        margin: 16px auto
+        
+    .center, .right, .left
+        display: flex
+        align-items: center
+
+    .right
+        justify-content: flex-end
+    .center
+        justify-content: center 
+    .left
+        justify-content: flex-start
+
+    button
         border: none
+        background: none
+
+    .resume
+        margin: auto 30px
+        font-size: 1.5em
+        text-decoration: none
+        display: inline-block
         vertical-align: middle
         border: none
         color: inherit
         background-color: transparent
+
+    .volume, .next
+        font-seize: 1.1em

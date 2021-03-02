@@ -14,7 +14,6 @@ export default function PlayerComponent(){
     useEffect(() => {
         player.initialize()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-
     }, [])
 
     function onStateChange(_actualState){

@@ -6,12 +6,12 @@ export default function Auth() {
     const spoty = useSpotifyManager()
 
     useEffect(() => {
-        spoty.getAuthorization()
+        spoty.requestAuthorization().catch( err => console.error(err))
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
     
     return (
-        <div>hola</div>
+        <div>Log in</div>
     )
 }
 

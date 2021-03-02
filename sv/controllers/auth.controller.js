@@ -12,6 +12,12 @@ const SCOPES_API = 'streaming user-read-email user-read-private';
 
 const authCtrl = {};
 
+
+
+
+
+
+
 authCtrl.auth = async (req, res, next) => {
     res.redirect(AUTH_API+
         "client_id="+CLIENT_ID+
@@ -19,12 +25,9 @@ authCtrl.auth = async (req, res, next) => {
         "&scope="+SCOPES_API);
 };
 
-const isEmpty = (data) => {
-    return data === null;
-}
 
-authCtrl.getToken = async (req, res, next) => {
-    var code = req.query.code || null;
+authCtrl.getTokens = async (req, res, next) => {
+    var code = req.query.code || null
     var refresh = req.query.refresh || null
 
     if (code !== null){

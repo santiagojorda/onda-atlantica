@@ -5,7 +5,6 @@ import LogInCallback from './components/spotify/LogInCallback';
 import Auth from './components/spotify/Auth'
 import PlayerComponent from './components/spotify/player/PlayerComponent';
 
-
 // los provider al final
 import ThemeProvider from "./components/theme/ThemeProvider";
 import SpotifyProvider from "./components/spotify/SpotifyProvider";
@@ -26,10 +25,14 @@ export default function App() {
           <Route exact path="/callback">
             <LogInCallback/>
           </Route>
+
+          <Route exact path='/'>
+            <PlayerComponent />
+          </Route>
         
         </Switch>
 
-        <PlayerComponent />
+
       </SpotifyProvider>
     </ThemeProvider>
   );

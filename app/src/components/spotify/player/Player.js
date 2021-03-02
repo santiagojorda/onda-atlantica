@@ -59,6 +59,8 @@ export default class Player {
     _handlePlayerReady(){
       this.webPlaybackInstance.on('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id); 
+        this.spotyManager._transferUserPlayback(device_id)
+          .then( () => this.pause() )
       })
     }
 

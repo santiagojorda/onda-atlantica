@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
-const { auth, getToken, getProfile } = require('../controllers/auth.controller');
+const { auth, getTokens, getProfile } = require('../controllers/auth.controller');
 
 router.post('/getProfile', getProfile)
-router.get('/getToken', getToken)
+router.post('/getTokens', getTokens)
 // router.get('/getCurrentPlayback', getCurrentPlayback)
 router.use('/auth',auth);
 

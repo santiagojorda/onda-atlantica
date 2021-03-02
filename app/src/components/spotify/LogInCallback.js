@@ -10,13 +10,13 @@ function useQuery() {
 export default function LogInCallback() {
 
     const spoty = useSpotifyManager()
-    let _query = useQuery()
+    const _query = useQuery()
     const [wasLogged, setWasLogged] = useState(false)
 
     useEffect( ()=>{
-      const code = _query.get("code")
+      const _code = _query.get("code")
 
-      spoty.authorizeCallback(code)
+      spoty.requestTokens(_code)
         .then(() => {
           setWasLogged(true)
         })
@@ -32,9 +32,7 @@ export default function LogInCallback() {
     }
 
     return (
-      <div>
-        {_renderRedirect()}
-      </div>
+        _renderRedirect()
     )
 
 }

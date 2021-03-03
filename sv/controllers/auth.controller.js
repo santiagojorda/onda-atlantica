@@ -8,7 +8,7 @@ const AUTH_API = 'https://accounts.spotify.com/authorize?',
       USER_URI = 'https://api.spotify.com/v1/me',
       PLAYER_URI = 'https://api.spotify.com/v1/me/player';
 
-const SCOPES_API = 'streaming user-read-email user-read-private'; 
+const SCOPES_API = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state'; 
 
 const authCtrl = {};
 

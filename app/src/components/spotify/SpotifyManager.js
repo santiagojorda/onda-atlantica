@@ -10,6 +10,8 @@ const CLIENT_ID = '40d2fa449749415f9570c843dee768f6'
 const CLIENT_SECRET = '26596c9d788a410d88dce1a3836bff19'
 const REDIRECT_URI = 'http://localhost:3000/callback'
 const TOKEN_URI = 'https://accounts.spotify.com/api/token'
+const DEVICES_URI = 'https://api.spotify.com/v1/me/player/devices'
+const PLAYER_ENDPOINT = 'https://api.spotify.com/v1/me/player'
 
 const HTTP_SUCCESSFUL_RESPONSE = 200
 
@@ -84,7 +86,7 @@ export default class SpotifyManager{
         
         //this function doesnt return a promise. this is a bad smell
         else
-            return await this.getAuthorization()
+            return await this.requestAuthorization()
     }
 
     _thereIsRefreshToken(){
@@ -140,7 +142,50 @@ export default class SpotifyManager{
             })
     }
 
-    async _transferUserPlayback(_device_id){
+    async pause(){
+        console.log('pausing music')
+        const _access_token = await this.getAccessToken()
+        const _url = 'https://api.spotify.com/v1/me/player/pause'
+        const _data = {
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ _access_token  
+            }
+        }
+        await fetch(_url, _data)
+            .then( resp => {
+                if(resp.ok)
+                    console.log('music has paused')
+                else
+                    throw resp.message
+            } )
+            .catch( err => console.error(err))
+    }
+
+    async resume(){
+        console.log('resuming music')
+        const _access_token = await this.getAccessToken()
+        const _url = 'https://api.spotify.com/v1/me/player/play'
+        const _data = {
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ _access_token  
+            }
+        }
+        fetch(_url, _data)
+            .then( resp => {
+                if(resp.ok)
+                    console.log('music has resumed')
+                else
+                    throw resp.message
+            } )
+            .catch( err => console.error(err))
+    }
+        
+    async setLastPlaylist(_device_id){
+        console.log('setting  music')
         const _access_token = await this.getAccessToken()
         const _url = 'https://api.spotify.com/v1/me/player/play?device_id='+_device_id
         const _data = {
@@ -150,14 +195,86 @@ export default class SpotifyManager{
                 'Authorization': 'Bearer '+ _access_token  
             },
             body: JSON.stringify({
-                uris: ['spotify:track:2Kb8XWqhy6DyW67HLepj10', 'spotify:track:1qXqUyVNrd2ymu7PQ6xoiC', 'spotify:track:1EKAEKLKc9hi6x8bjgTT9T']
+                context_uri: "spotify:playlist:2HEJBPwHCrWlvd9s4r2Nte"
             })
         }
-        return fetch(_url, _data).then( resp => {
-            if(!resp.ok)
-                throw resp
-            console.log('device was loaded')
-        })
+        return await fetch(_url, _data)
+            .then( resp => {
+                if(!resp.ok)
+                    throw resp.message
+                console.log('the playlist has been set')
+            })
+    }
+
+    async transferUserPlayback(_device_id){
+        console.log('transfering user playback to device: ' + _device_id)
+        const _access_token = await this.getAccessToken()
+        const _url = PLAYER_ENDPOINT
+        const _data = {
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ _access_token  
+            },
+            body: JSON.stringify({
+                'device_ids': [_device_id],
+            })
+        }
+        return fetch(_url, _data)
+            .then( resp => {
+                if(!resp.ok)
+                    throw resp
+            })
+            .then(async () => {
+
+                const _currentPlayback = await this.getCurrentPlayback()
+                console.log(_currentPlayback)
+                if(_currentPlayback.device.id !== _device_id)
+                    throw 'device was not transfered'
+                console.log('device was loaded')
+            })
+            .catch( err => console.error(err))
+    }
+
+    async getDevicesInfo(){
+        console.log('getting users available devices' )
+        const _access_token = await this.getAccessToken()
+        const _url = 'https://api.spotify.com/v1/me/player/devices'         
+        const _data = {
+            headers:{
+                'Authorization': 'Bearer '+ _access_token  
+            }
+        }
+        return await fetch(_url, _data)
+            .then( resp => {
+                if(!resp.ok)
+                    throw resp.message
+                console.log('users available devices has been obtained')
+                if(resp.status !== 204)
+                    return resp.json()
+            })
+            .then( data => data.devices)
+            .catch( err => console.error(err))
+    }
+
+    async getCurrentPlayback(){
+        console.log('getting users current playback info' )
+        const _access_token = await this.getAccessToken()
+        const _url = 'https://api.spotify.com/v1/me/player'         
+        const _data = {
+            headers:{
+                'Authorization': 'Bearer '+ _access_token  
+            }
+        }
+        return await fetch(_url, _data)
+            .then( resp => {
+                if(!resp.ok)
+                    throw resp.message
+                console.log('users current playback info has been obtained')
+                if(resp.status !== 204)
+                    return resp.json()
+            })
+            .catch( err => console.error(err))
     }
 
 }

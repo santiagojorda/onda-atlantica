@@ -4,29 +4,30 @@ const PLAYER_NAME = 'Onda Atlantica'
 
 export default class Player {
 
-    constructor(spotyManager, getChangeDataToComponent){
+    constructor(spotyManager, getChangeDataToComponent, afterInitPlayer){
       this.spotyManager = spotyManager
       this.webPlaybackInstance = null
       this.getChangeDataToComponent = getChangeDataToComponent
+      this.afterInitPlayer = afterInitPlayer 
     }
 
     initialize(){
       importScript('https://sdk.scdn.co/spotify-player.js')
         .then( () => this._handleScriptLoad())
-        .catch( err => console.error(err))
     }
 
     _handleScriptLoad() {
-      window.onSpotifyWebPlaybackSDKReady = () => {
-        this._initializeWebPlayback()
-            .then( () => {
-              this._handlePlayerErrors()
-              this._handlePlayerStatusUpdates()
-              this._handlePlayerReady()
-              this._handlePlayerConnect()
-            })
+        window.onSpotifyWebPlaybackSDKReady = () => {
+          this._initializeWebPlayback()
+              .then( () => {
+                this._handlePlayerErrors()
+                this.webPlaybackInstance.connect()
+                this._handlePlayerReady()
+                this._handlePlayerStatusUpdates()
+              })
+        }
       }
-    }
+    
 
     _initializeWebPlayback(){
       return this.spotyManager
@@ -37,9 +38,6 @@ export default class Player {
             getOAuthToken: callback => {callback(token)},
             volume: 0.5
           })
-        })
-        .catch( err => {
-          console.error('There was an error getting an Access Token when Spotify Player was initialized: ' + err)
         })
     }
 
@@ -52,6 +50,7 @@ export default class Player {
 
     _handlePlayerStatusUpdates(){
       this.webPlaybackInstance.addListener('player_state_changed', state => { 
+        console.log(state)
         this.getChangeDataToComponent(state)
       })
     }
@@ -59,17 +58,25 @@ export default class Player {
     _handlePlayerReady(){
       this.webPlaybackInstance.on('ready', ({ device_id }) => {
         console.log('Ready with Device ID', device_id); 
-        this.spotyManager._transferUserPlayback(device_id)
-          .then( () => this.pause() )
+        this.afterInitPlayer(device_id)
+        // this.getDevicesInfo(device_id)
+
+        // console.log('first pause')
+        // this.spotyManager.pause()
       })
     }
 
-    _handlePlayerConnect(){
-      this.webPlaybackInstance.connect().then( () => {
-        console.log('player is connected')
+    connect(){
+      this.webPlaybackInstance.connect().then(success => {
+        if (success) {
+          console.log('The Web Playback SDK successfully connected to Spotify!');
+        }
       })
     }
 
+    disconnect(){
+      this.webPlaybackInstance.disconnect()
+    }
 
     resume(){
       this.webPlaybackInstance.resume()

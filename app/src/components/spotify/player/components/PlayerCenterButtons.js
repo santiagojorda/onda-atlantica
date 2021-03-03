@@ -9,21 +9,17 @@ export default class PlayerCenterButtons extends React.Component {
         this._togglePlayer = this._togglePlayer.bind(this)
     }
 
-    _isPlaying(){
-        return !this.props.actualState.paused
-    }
-    
 
     _togglePlayer() {
         console.log(this.props.actualState)
-        if(this._isPlaying())
+        if(this.props.isPlaying)
             this.props.onPause()
         else
             this.props.onResume()
     }
 
-    _thereIsState(){
-        return this.props.actualState != null
+    _thereIsDeviceConnected(){
+        return true
     }
 
     _showButtons(){
@@ -33,7 +29,7 @@ export default class PlayerCenterButtons extends React.Component {
                     </button>
 
                     <button onClick={this._togglePlayer}>
-                        <FontAwesomeIcon className='resume' icon={this._isPlaying() ? faPause : faPlay } />
+                        <FontAwesomeIcon className='resume' icon={this.props.isPlaying ? faPause : faPlay } />
                     </button>
                     
                     <button onClick={this.props.onNextTrack}>
@@ -44,9 +40,10 @@ export default class PlayerCenterButtons extends React.Component {
 
     render() {
         return (
-            (this._thereIsState())
-                ? this._showButtons()
-                : <p>Please connect your device.</p>   
+            this._showButtons()
+            // (this._thereIsDeviceConnected())
+            //     ? this._showButtons()
+            //     : <p>Please connect your device.</p>   
         )
     }
 }

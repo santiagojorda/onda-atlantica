@@ -1,7 +1,5 @@
 import { 
-    URL_SERVER_AUTH,
-    URL_SERVER_GET_TOKENS,
-    URL_SERVER_PLAYER
+    URL_SERVER_AUTH
 } from '../../common/constants'
 
 import SpotifyStorageManager from './SpotifyStorageManager'
@@ -10,9 +8,9 @@ const CLIENT_ID = '40d2fa449749415f9570c843dee768f6'
 const CLIENT_SECRET = '26596c9d788a410d88dce1a3836bff19'
 const REDIRECT_URI = 'http://localhost:3000/callback'
 const TOKEN_URI = 'https://accounts.spotify.com/api/token'
-const DEVICES_URI = 'https://api.spotify.com/v1/me/player/devices'
 const PLAYER_ENDPOINT = 'https://api.spotify.com/v1/me/player'
 
+const HTTP_NO_CONTENT = 204
 const HTTP_SUCCESSFUL_RESPONSE = 200
 
 export default class SpotifyManager{
@@ -44,7 +42,7 @@ export default class SpotifyManager{
                         return resp.json()
                     }
                     else 
-                        throw 'requestToken error'
+                        throw resp
                 })
                 .then(data => {
                     this._saveNewTokensInStorage(data)
@@ -116,26 +114,24 @@ export default class SpotifyManager{
         }
 
         return fetch(_url, _data)
-                .then( resp => {
-                    if(resp.ok){
-                        return resp.json()
-                    }
-                    else 
-                        throw 'requestToken error'
-                })
-                .then(data => {
-                    this._saveNewTokensInStorage(data)
-                }) 
+            .then( resp => {
+                if(resp.ok)
+                    return resp.json()
+                else 
+                    throw resp.message
+            })
+            .then(data => {
+                this._saveNewTokensInStorage(data)
+            }) 
     }
 
     _fetchFunction(_url, _data, _callback){
         return fetch(_url, _data)
             .then( resp => {
-                if(resp.ok){
+                if(resp.ok)
                     return resp.json()
-                }
                 else 
-                    throw 'requestToken error'
+                    throw resp
             })
             .then(data => {
                 _callback(data)
@@ -143,7 +139,6 @@ export default class SpotifyManager{
     }
 
     async pause(){
-        console.log('pausing music')
         const _access_token = await this.getAccessToken()
         const _url = 'https://api.spotify.com/v1/me/player/pause'
         const _data = {
@@ -153,18 +148,10 @@ export default class SpotifyManager{
                 'Authorization': 'Bearer '+ _access_token  
             }
         }
-        await fetch(_url, _data)
-            .then( resp => {
-                if(resp.ok)
-                    console.log('music has paused')
-                else
-                    throw resp.message
-            } )
-            .catch( err => console.error(err))
+        this._fetch(_url, _data)
     }
 
     async resume(){
-        console.log('resuming music')
         const _access_token = await this.getAccessToken()
         const _url = 'https://api.spotify.com/v1/me/player/play'
         const _data = {
@@ -174,18 +161,23 @@ export default class SpotifyManager{
                 'Authorization': 'Bearer '+ _access_token  
             }
         }
-        fetch(_url, _data)
-            .then( resp => {
-                if(resp.ok)
-                    console.log('music has resumed')
-                else
-                    throw resp.message
-            } )
-            .catch( err => console.error(err))
+        this._fetch(_url, _data)
+    }
+
+    async nextTrack(){
+        const _access_token = await this.getAccessToken()
+        const _url = 'https://api.spotify.com/v1/me/player/next'
+        const _data = {
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ _access_token  
+            }
+        }
+        this._fetch(_url, _data)
     }
         
     async setLastPlaylist(_device_id){
-        console.log('setting  music')
         const _access_token = await this.getAccessToken()
         const _url = 'https://api.spotify.com/v1/me/player/play?device_id='+_device_id
         const _data = {
@@ -198,16 +190,34 @@ export default class SpotifyManager{
                 context_uri: "spotify:playlist:2HEJBPwHCrWlvd9s4r2Nte"
             })
         }
-        return await fetch(_url, _data)
+        return await this._fetch(_url, _data)
+    }
+
+    _fetch (_url, _data){
+        return fetch(_url, _data)
             .then( resp => {
                 if(!resp.ok)
                     throw resp.message
-                console.log('the playlist has been set')
             })
+            .catch( err => console.error(err))
+    }
+
+    _thereIsNoContent(_resp){
+        return _resp.status !== HTTP_NO_CONTENT
+    }
+
+    _fetchJson(_url, _data){
+        return fetch(_url, _data)
+            .then( resp => {
+                if(!resp.ok)
+                    throw resp.message
+                if(this._thereIsNoContent(resp))
+                    return resp.json()
+            })
+            .catch( err => console.error(err))
     }
 
     async transferUserPlayback(_device_id){
-        console.log('transfering user playback to device: ' + _device_id)
         const _access_token = await this.getAccessToken()
         const _url = PLAYER_ENDPOINT
         const _data = {
@@ -220,24 +230,10 @@ export default class SpotifyManager{
                 'device_ids': [_device_id],
             })
         }
-        return fetch(_url, _data)
-            .then( resp => {
-                if(!resp.ok)
-                    throw resp
-            })
-            .then(async () => {
-
-                const _currentPlayback = await this.getCurrentPlayback()
-                console.log(_currentPlayback)
-                if(_currentPlayback.device.id !== _device_id)
-                    throw 'device was not transfered'
-                console.log('device was loaded')
-            })
-            .catch( err => console.error(err))
+        return this._fetch(_url, _data)
     }
 
     async getDevicesInfo(){
-        console.log('getting users available devices' )
         const _access_token = await this.getAccessToken()
         const _url = 'https://api.spotify.com/v1/me/player/devices'         
         const _data = {
@@ -245,20 +241,11 @@ export default class SpotifyManager{
                 'Authorization': 'Bearer '+ _access_token  
             }
         }
-        return await fetch(_url, _data)
-            .then( resp => {
-                if(!resp.ok)
-                    throw resp.message
-                console.log('users available devices has been obtained')
-                if(resp.status !== 204)
-                    return resp.json()
-            })
+        return await this._fetchJson(_url, _data)
             .then( data => data.devices)
-            .catch( err => console.error(err))
     }
 
     async getCurrentPlayback(){
-        console.log('getting users current playback info' )
         const _access_token = await this.getAccessToken()
         const _url = 'https://api.spotify.com/v1/me/player'         
         const _data = {
@@ -266,15 +253,7 @@ export default class SpotifyManager{
                 'Authorization': 'Bearer '+ _access_token  
             }
         }
-        return await fetch(_url, _data)
-            .then( resp => {
-                if(!resp.ok)
-                    throw resp.message
-                console.log('users current playback info has been obtained')
-                if(resp.status !== 204)
-                    return resp.json()
-            })
-            .catch( err => console.error(err))
+        return await this._fetchJson(_url, _data)
     }
 
 }

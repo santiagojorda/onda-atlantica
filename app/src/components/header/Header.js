@@ -13,7 +13,7 @@ export default function Header() {
         return (
             <Link to="/">
                 <div className="logo-container"> 
-                    <div className="line" style={{width: '20%'}}></div>
+                    <div className="line" style={{width: '5%'}}></div>
                     <img src={Logo} alt=""/>
                     <h1>Onda Atläntica</h1>
                     <div className="line"></div>
@@ -30,7 +30,7 @@ export default function Header() {
 
     return (
         <header style={_actualTheme}>
-            <div className="container">
+            <div className="container-fluid">
                 <div className="row">
                     <div className="col-12">
                         {_renderBrand()}

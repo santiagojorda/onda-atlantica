@@ -1,15 +1,14 @@
-import { 
-    URL_SERVER_AUTH
-} from '../../common/constants'
+
 
 import SpotifyStorageManager from './SpotifyStorageManager'
 
 const CLIENT_ID = '40d2fa449749415f9570c843dee768f6'
 const CLIENT_SECRET = '26596c9d788a410d88dce1a3836bff19'
-const REDIRECT_URI = 'http://localhost:3000/callback'
+// const REDIRECT_URI = 'http://localhost:3000/callback'
 const TOKEN_URI = 'https://accounts.spotify.com/api/token'
 const PLAYER_ENDPOINT = 'https://api.spotify.com/v1/me/player'
-
+const SCOPES_API = 'streaming user-read-email user-read-private user-modify-playback-state user-read-playback-state'; 
+const REDIRECT_URI = 'https://santiagojorda.github.io/onda-atlantica/callback'
 const HTTP_NO_CONTENT = 204
 const HTTP_SUCCESSFUL_RESPONSE = 200
 
@@ -21,7 +20,8 @@ export default class SpotifyManager{
 
     async requestAuthorization(){
         return new Promise( () => {
-            window.location.href = URL_SERVER_AUTH
+            window.location.href = 'https://accounts.spotify.com/authorize?client_id='+CLIENT_ID+'&response_type=code&redirect_uri='+REDIRECT_URI+'&scope='+SCOPES_API
+            // window.location.href = URL_SERVER_AUTH
         })
     }
 

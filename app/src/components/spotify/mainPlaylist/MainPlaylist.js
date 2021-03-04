@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {useSpotifyManager} from '../SpotifyProvider'
-import mainPlaylistCover from '../../../images/covers/main-playlist.jpg'
+import mainPlaylistCover from '../../../images/covers/main-playlist2.jpg'
 import './mainPlaylist.sass'
 const MAIN_PLAYLIST_ID = '2HEJBPwHCrWlvd9s4r2Nte'
 const MAIN_PLAYLIST_URI = 'spotify:playlist:2HEJBPwHCrWlvd9s4r2Nte'
@@ -81,15 +81,11 @@ export default function MainPlaylist() {
         <div className="main-playlist">
             <div className="container">
                 <div className="row">
-                    <div className="col-7 left">
+                    <div className="col-6 left">
                         <img src={mainPlaylistCover} alt=""/>
                     </div>
-                    <div className="col-5 right">
-                        {
-                            (actualPlaylist !== null)
-                                ? _renderTracks()
-                                : <p>there is no playlist</p>
-                        }
+                    <div className="col-6 right">
+                        {(actualPlaylist !== null) && _renderTracks()}
                     </div>
                 </div>
             </div>

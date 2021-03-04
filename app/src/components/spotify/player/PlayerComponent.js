@@ -25,7 +25,6 @@ export default function PlayerComponent(){
         
         if(_currentPlayback !== undefined){
             setIsPlaying(_currentPlayback.is_playing)
-            
             if(!_currentPlayback.is_playing)
                 _transferPlayer(_device_id)
             else  
@@ -60,7 +59,8 @@ export default function PlayerComponent(){
     }
 
     async function _refreshDevices(){
-        setDevices(await spotyManager.getDevicesInfo())
+        const _devices = await spotyManager.getDevicesInfo()
+        setDevices(_devices)
     }
 
 

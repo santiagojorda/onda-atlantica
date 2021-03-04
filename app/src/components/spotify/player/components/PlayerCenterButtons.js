@@ -9,7 +9,6 @@ export default class PlayerCenterButtons extends React.Component {
         this._togglePlayer = this._togglePlayer.bind(this)
     }
 
-
     _togglePlayer() {
         if(this.props.isPlaying)
             this.props.onPause()

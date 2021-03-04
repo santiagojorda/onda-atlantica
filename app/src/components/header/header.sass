@@ -1,14 +1,32 @@
 
-header .row
-    height: 100px
-    
-header .column
-    display: flex
-    align-items: center
 
-    h1
-        margin: 0
-        font-size: 16px
+header 
+    .row
+        height: 100px
+        display: flex
+        align-items: center
 
-    button
-        border: none
+
+        .logo-container
+            display: flex
+            align-items: center
+            height: auto
+
+            img
+                display: inline
+                width: 50px 
+                margin: 0 20px
+
+            h1
+                display: inline
+                margin: 0
+                font-size: 20px
+
+            .line
+                height: 2px
+                background: rgba(0, 0, 0, 0.4) 
+                width: 100%
+                border: 5px
+
+        button
+            border: none

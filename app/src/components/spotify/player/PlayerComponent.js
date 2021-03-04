@@ -8,8 +8,8 @@ import PlayerDevicesButtons from './components/PlayerDevicesButtons'
 
 export default function PlayerComponent(){
 
-    const [spotyManager,] = useState(useSpotifyManager())
-    const [player,] = useState(new Player(spotyManager, onStateChange, _afterInitPlayer))
+    const spotyManager = useSpotifyManager()
+    const player = new Player(spotyManager, onStateChange, _afterInitPlayer)
     const [actualState, setActualState] = useState(null)
     const [devices, setDevices] = useState(null)
     const [isPlaying, setIsPlaying] = useState(false)
@@ -92,6 +92,16 @@ export default function PlayerComponent(){
         setActualState(_actualState)
     }
 
+    function _pause(){
+        setIsPlaying(false)
+        spotyManager.pause()
+    }
+
+    function _resume(){
+        setIsPlaying(true)
+        spotyManager.resume()
+    }
+
     return (
         <div className='player'>
             <div className="container">
@@ -104,16 +114,8 @@ export default function PlayerComponent(){
                     <div className="col-4 center">
                         <PlayerCenterButtons 
                             actualState={actualState}
-                            onResume={() => {
-                                    setIsPlaying(true)
-                                    spotyManager.resume()
-                                }
-                            }
-                            onPause={ () => {
-                                    setIsPlaying(false)
-                                    spotyManager.pause()
-                                }
-                            }
+                            onResume={_resume}
+                            onPause={_pause}
                             onNextTrack={() => spotyManager.nextTrack()}
                             isPlaying={isPlaying}
                         />

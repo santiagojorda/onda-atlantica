@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import {useTheme, useThemeToggler} from '../theme/ThemeProvider'
 import './header.sass'
+import Logo from '../../images/logo.svg'
 
 export default function Header() {
 
@@ -11,7 +12,12 @@ export default function Header() {
     function _renderBrand(){
         return (
             <Link to="/">
-                <h1>Onda Atlantica</h1>
+                <div className="logo-container"> 
+                    <div className="line" style={{width: '20%'}}></div>
+                    <img src={Logo} alt=""/>
+                    <h1>Onda Atläntica</h1>
+                    <div className="line"></div>
+                </div>
             </Link>
         )
     }
@@ -25,14 +31,14 @@ export default function Header() {
     return (
         <header style={_actualTheme}>
             <div className="container">
-                <div className="row justify-content-between">
-                    <div className="col-3 column">
+                <div className="row">
+                    <div className="col-12">
                         {_renderBrand()}
                     </div>
 
-                    <div className="col-3 column">
+                    {/* <div className="col-3 column">
                         {_renderTogglerTheme()}
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </header>

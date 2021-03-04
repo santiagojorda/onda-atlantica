@@ -47,7 +47,7 @@ export class PlayerDevicesButtons extends Component {
 
     _renderMenuDevices(){
         return (
-            <nav id='nav-devices' className='nav-devices'>
+            <nav id='nav-devices' className='nav-devices shadow border'>
                 <ul>
                     {this.props.devices.map((device, i) => {
                         return <li key={i} onClick={()=> {

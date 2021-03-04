@@ -177,23 +177,18 @@ export default class SpotifyManager{
         this._fetch(_url, _data)
     }
         
-    async setLastPlaylist(_device_id){
+    async _getPlaylist(_playlist_id){
         const _access_token = await this.getAccessToken()
-        const _url = 'https://api.spotify.com/v1/me/player/play?device_id='+_device_id
+        const _url = 'https://api.spotify.com/v1/playlists/'+_playlist_id+'/tracks'
         const _data = {
-            method: 'PUT',
             headers:{
-                'Content-Type': 'application/json',
                 'Authorization': 'Bearer '+ _access_token  
-            },
-            body: JSON.stringify({
-                context_uri: "spotify:playlist:2HEJBPwHCrWlvd9s4r2Nte"
-            })
+            }
         }
-        return await this._fetch(_url, _data)
+        return await this._fetchJson(_url, _data)
     }
 
-    _fetch (_url, _data){
+    _fetch(_url, _data){
         return fetch(_url, _data)
             .then( resp => {
                 if(!resp.ok)
@@ -255,5 +250,23 @@ export default class SpotifyManager{
         }
         return await this._fetchJson(_url, _data)
     }
+
+    async setActualTrack(_context,_offset){
+        const _access_token = await this.getAccessToken()
+        const _url = PLAYER_ENDPOINT+'/play'
+        const _data = {
+            method: 'PUT',
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer '+ _access_token  
+            },
+            body: JSON.stringify({
+                context_uri: _context,
+                offset: {position: _offset}
+            })
+        }
+        return await this._fetch(_url, _data)
+    }
+
 
 }

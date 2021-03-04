@@ -1,0 +1,79 @@
+
+
+.main-playlist
+
+    margin: 15px 0
+
+    .info 
+        width: fit-content
+        display: inline-block
+        .title
+            margin: 0
+            color: black
+            font-size: 13px
+
+        .artist
+            margin: 0
+            color: #a0a0a0
+            font-size: 13px
+
+    .left
+        img
+            width: 100%
+            max-width: 500px
+
+    .track-list
+        margin: 0
+        padding: 0
+
+        .item
+            margin-bottom: 20px
+
+        .active-item
+            padding: 1rem
+
+            .top
+                display: flex
+                align-items: center
+
+                .cicle:before
+                    min-width: 3rem
+
+                .circle
+                    border-radius: 50%
+                    background-color: black
+                    margin-left: 0.75rem
+                    margin-right: 1.5rem
+                    width: 1.5rem
+                    height: 1.5rem
+                    display: flex
+                    align-items: center
+                    justify-content: center
+
+                    .position
+                        font-size: 12px
+                        color: white
+                        text-align: center
+            .bottom
+                margin-top: 1rem
+                display: flex
+                align-items: center
+
+                img    
+                    margin-left: 0.75rem
+                    margin-right: 1rem
+                    border-radius: 3px
+
+        .no-active-item
+            cursor: pointer
+            display: flex
+            align-items: center
+            .position
+                margin: 0 1rem
+                min-width: 3rem
+                text-align: center
+                font-size: 12px
+                color: #a0a0a0
+                display: inline-block
+
+            

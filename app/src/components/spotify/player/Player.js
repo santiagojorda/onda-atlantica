@@ -1,6 +1,6 @@
 import importScript from '../../../common/importScript'
 
-const PLAYER_NAME = 'Onda Atlantica'
+const PLAYER_NAME = 'Onda Atläntica'
 
 export default class Player {
 

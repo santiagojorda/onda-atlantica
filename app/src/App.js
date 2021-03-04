@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom"
 import LogInCallback from './components/spotify/LogInCallback';
 import Auth from './components/spotify/Auth'
 import PlayerComponent from './components/spotify/player/PlayerComponent';
+import MainPlaylist from './components/spotify/mainPlaylist/MainPlaylist';
 
 // los provider al final
 import ThemeProvider from "./components/theme/ThemeProvider";
@@ -27,6 +28,7 @@ export default function App() {
           </Route>
 
           <Route exact path='/'>
+            <MainPlaylist />
             <PlayerComponent />
           </Route>
         

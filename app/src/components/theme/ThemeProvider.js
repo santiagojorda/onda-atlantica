@@ -12,9 +12,11 @@ export function useThemeToggler(){
     return useContext(ThemeTogglerContext)
 }
 
+const INITIAL_THEME = themes.light
+
 export default function ThemeProvider(props) {
     
-    const [theme, setTheme] = useState(themes.dark)
+    const [theme, setTheme] = useState(INITIAL_THEME)
     function _isLight(){
         return (theme === themes.light)
     }

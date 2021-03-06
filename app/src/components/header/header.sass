@@ -1,6 +1,12 @@
 
 
 header 
+    position: fixed
+    top: 0
+    width: 100%
+    z-index: 9999
+    backgroudn: white
+
     .row
         height: 100px
         display: flex
@@ -12,9 +18,10 @@ header
             align-items: center
             height: auto
 
-            img
+            .logo
                 display: inline
-                width: 40px 
+                height: auto
+                width: 35px
                 margin-left: 20px
                 margin-right: 20px
 
@@ -22,7 +29,7 @@ header
                 display: inline
                 margin: 0
                 width: min-content
-                font-size: 20px
+                font-size: 16px
                 margin-right: 20px
 
             .line

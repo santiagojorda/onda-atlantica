@@ -7,35 +7,32 @@ import PlayerComponent from './components/spotify/player/PlayerComponent';
 import MainPlaylist from './components/spotify/mainPlaylist/MainPlaylist';
 
 // los provider al final
-import ThemeProvider from "./components/theme/ThemeProvider";
 import SpotifyProvider from "./components/spotify/SpotifyProvider";
 
 
 export default function App() {  
 
   return (
-    <ThemeProvider>
-      <SpotifyProvider>
-        <Header />
+    <SpotifyProvider>
+      <Header />
 
-        <Switch>
-          <Route exact path="/auth">
-            <Auth />
-          </Route>
+      <Switch>
+        <Route exact path="/auth">
+          <Auth />
+        </Route>
 
-          <Route exact path="/callback">
-            <LogInCallback/>
-          </Route>
+        <Route exact path="/callback">
+          <LogInCallback/>
+        </Route>
 
-          <Route exact path='/'>
-            <MainPlaylist />
-            <PlayerComponent />
-          </Route>
-        
-        </Switch>
+        <Route exact path='/'>
+          <MainPlaylist />
+          <PlayerComponent />
+        </Route>
+      
+      </Switch>
 
 
-      </SpotifyProvider>
-    </ThemeProvider>
+    </SpotifyProvider>
   );
 }

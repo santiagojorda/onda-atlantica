@@ -27,18 +27,14 @@ export default function MainPlaylist() {
 
     function _renderActiveTrackContainer(_item, _pos){
         return <div key={_pos} className="active-item shadow border">
-            <div className="top">
-                <div className="circle">
-                    <p className='position'>{_pos+1}</p>
-                </div>
-                <div className="info">
-                    <p className='title'>{_item.track.name}</p>
-                    <p className='artist'>{_item.track.artists[0].name}</p>
-                </div>
-            </div>
+            <img src={_item.track.album.images[2].url} alt=""/>
 
-            <div className="bottom">
-                <img src={_item.track.album.images[2].url} alt=""/>
+            <div className="circle">
+                <p className='position'>{_pos+1}</p>
+            </div>
+            <div className="info">
+                <p className='title'>{_item.track.name}</p>
+                <p className='artist'>{_item.track.artists[0].name}</p>
             </div>
         </div>
     }

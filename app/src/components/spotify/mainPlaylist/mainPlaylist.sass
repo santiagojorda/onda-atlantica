@@ -1,8 +1,7 @@
 
 
 .main-playlist
-
-    margin: 15px 0
+    
 
     .info 
         width: fit-content
@@ -30,29 +29,27 @@
 
         .active-item
             padding: 1rem
+            display: flex
+            align-items: center
 
-            .top
+            .cicle:before
+                min-width: 3rem
+
+            .circle
+                border-radius: 50%
+                background-color: black
+                margin-left: 1.5rem
+                margin-right: 1.5rem
+                width: 1.5rem
+                height: 1.5rem
                 display: flex
                 align-items: center
+                justify-content: center
 
-                .cicle:before
-                    min-width: 3rem
-
-                .circle
-                    border-radius: 50%
-                    background-color: black
-                    margin-left: 0.75rem
-                    margin-right: 1.5rem
-                    width: 1.5rem
-                    height: 1.5rem
-                    display: flex
-                    align-items: center
-                    justify-content: center
-
-                    .position
-                        font-size: 12px
-                        color: white
-                        text-align: center
+                .position
+                    font-size: 12px
+                    color: white
+                    text-align: center
             .bottom
                 margin-top: 1rem
                 display: flex

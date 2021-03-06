@@ -4,29 +4,30 @@ const PLAYER_NAME = 'Onda Atläntica'
 
 export default class Player {
 
-    constructor(spotyManager, getChangeDataToComponent, afterInitPlayer){
+    constructor(spotyManager, getChangeDataToComponent){
       this.spotyManager = spotyManager
       this.webPlaybackInstance = null
       this.getChangeDataToComponent = getChangeDataToComponent
-      this.afterInitPlayer = afterInitPlayer 
     }
 
     initialize(){
-      importScript('https://sdk.scdn.co/spotify-player.js')
+      return importScript('https://sdk.scdn.co/spotify-player.js')
         .then( () => this._handleScriptLoad())
     }
 
     _handleScriptLoad() {
-        window.onSpotifyWebPlaybackSDKReady = () => {
+      return new Promise( res => {
+          window.onSpotifyWebPlaybackSDKReady = () => {
           this._initializeWebPlayback()
               .then( () => {
                 this._handlePlayerErrors()
                 this.connect()
-                this._handlePlayerReady()
                 this._handlePlayerStatusUpdates()
+                res(this._handlePlayerReady())
               })
         }
-      }
+      })
+    }
     
 
     _initializeWebPlayback(){
@@ -55,8 +56,8 @@ export default class Player {
     }
 
     _handlePlayerReady(){
-      this.webPlaybackInstance.addListener('ready', ({ device_id }) => {
-        this.afterInitPlayer(device_id)
+      return new Promise( res => {
+        this.webPlaybackInstance.addListener('ready', ({ device_id }) => res(device_id))
       })
     }
 

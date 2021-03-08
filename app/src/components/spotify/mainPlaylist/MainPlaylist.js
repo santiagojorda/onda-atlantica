@@ -2,9 +2,14 @@ import React, { useState, useEffect } from 'react'
 import {useSpotifyManager,useSessionState} from '../SpotifyProvider'
 import mainPlaylistCover from '../../../images/covers/main-playlist2.jpg'
 import './mainPlaylist.sass'
+import SignInButton from '../SignInButton'
+
+import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const MAIN_PLAYLIST_ID = '2HEJBPwHCrWlvd9s4r2Nte'
 const MAIN_PLAYLIST_URI = 'spotify:playlist:'+MAIN_PLAYLIST_ID
 const THERE_IS_NO_ACTIVE_ITEM = -1
+
 export default function MainPlaylist() {
 
     const {getPlaylist, setCurrentTrack } = useSpotifyManager()
@@ -75,6 +80,12 @@ export default function MainPlaylist() {
         )
     }
 
+    function _showSignIn() {
+        return <div className='d-flex justify-content-center align-items-center h-100'>
+                <SignInButton />
+            </div>
+    }
+
     return (
         <div className="main-playlist">
             <div className="container">
@@ -86,8 +97,8 @@ export default function MainPlaylist() {
                         { (isLogged) 
                             ? (actualPlaylist)
                                 ?_renderTracks()
-                                : 'chargin' 
-                            : 'sig in'
+                                : ''
+                            : _showSignIn()
                         }</div>
                 </div>
             </div>

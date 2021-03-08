@@ -4,6 +4,7 @@ import './header.sass'
 import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useSessionState, useSpotifyManager} from '../spotify/SpotifyProvider'
+import SignInButton from '../spotify/SignInButton';
 
 export default function Header() {
 
@@ -27,7 +28,7 @@ export default function Header() {
         if(isLogged && currentUser){
             return <p onClick={disconnect}>{currentUser.display_name}</p>
         }
-        return <p onClick={requestAuthorization}>Sign In With Spotify</p>
+        return <SignInButton/>
     }
 
     return (

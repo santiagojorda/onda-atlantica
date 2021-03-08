@@ -6,6 +6,7 @@ import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PlayerCenterButtons from './components/PlayerCenterButtons'
 import PlayerDevicesButtons from './components/PlayerDevicesButtons'
+import SignInButton from '../SignInButton';
 
 export default function PlayerComponent(){
 
@@ -160,6 +161,12 @@ export default function PlayerComponent(){
         </div>
     }
 
+    function _showSignInButton(){
+        return <div className="col-12">
+                <SignInButton/>
+            </div>
+    }
+
     return (
         <div className='player'>
             <div className="container">
@@ -169,7 +176,7 @@ export default function PlayerComponent(){
                         ? (devices)
                             ? _showButtons()
                             : _showLoadingMessage()
-                        : 'sig in'
+                        : _showSignInButton()
                     }
 
                 </div>

@@ -4,7 +4,7 @@ import './header.sass'
 import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {useSessionState, useSpotifyManager} from '../spotify/SpotifyProvider'
-import SignInButton from '../spotify/SignInButton';
+import SignInButton from '../spotify/signInButton/SignInButton';
 
 export default function Header() {
 

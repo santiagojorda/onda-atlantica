@@ -6,7 +6,7 @@ import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PlayerCenterButtons from './components/PlayerCenterButtons'
 import PlayerDevicesButtons from './components/PlayerDevicesButtons'
-import SignInButton from '../SignInButton';
+import SignInButton from '../signInButton/SignInButton';
 
 export default function PlayerComponent(){
 

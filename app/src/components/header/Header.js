@@ -3,8 +3,16 @@ import { Link } from 'react-router-dom'
 import './header.sass'
 import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {useSessionState, useSpotifyManager} from '../spotify/SpotifyProvider'
 
 export default function Header() {
+
+    const {
+        requestAuthorization, 
+        currentUser,
+        disconnect
+    } = useSpotifyManager()
+    const isLogged = useSessionState()
 
     function _renderBrand(){
         return (
@@ -15,17 +23,25 @@ export default function Header() {
         )
     }
 
+    function _renderSession(){
+        if(isLogged && currentUser){
+            return <p onClick={disconnect}>{currentUser.display_name}</p>
+        }
+        return <p onClick={requestAuthorization}>Sign In With Spotify</p>
+    }
+
     return (
         <header>
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-12">
+                    <div className="col-6 left">
                         {_renderBrand()}
+                    </div>
+                    <div className="col-6 right">
+                        {_renderSession()}
                     </div>
                 </div>
             </div>
         </header>
-
-
     )
 }

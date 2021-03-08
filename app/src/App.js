@@ -2,7 +2,6 @@ import Header from './components/header/Header'
 
 import { Route, Switch } from "react-router-dom"
 import LogInCallback from './components/spotify/LogInCallback';
-import Auth from './components/spotify/Auth'
 import PlayerComponent from './components/spotify/player/PlayerComponent';
 import MainPlaylist from './components/spotify/mainPlaylist/MainPlaylist';
 
@@ -17,9 +16,6 @@ export default function App() {
       <Header />
 
       <Switch>
-        <Route exact path="/auth">
-          <Auth />
-        </Route>
 
         <Route exact path="/callback">
           <LogInCallback/>
@@ -27,7 +23,7 @@ export default function App() {
 
         <Route exact path='/'>
           <MainPlaylist />
-          <PlayerComponent />
+          <PlayerComponent /> 
         </Route>
       
       </Switch>

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import {useSpotifyManager} from '../SpotifyProvider'
+import {useSpotifyManager,useSessionState} from '../SpotifyProvider'
 import mainPlaylistCover from '../../../images/covers/main-playlist2.jpg'
 import './mainPlaylist.sass'
 const MAIN_PLAYLIST_ID = '2HEJBPwHCrWlvd9s4r2Nte'
-const MAIN_PLAYLIST_URI = 'spotify:playlist:2HEJBPwHCrWlvd9s4r2Nte'
+const MAIN_PLAYLIST_URI = 'spotify:playlist:'+MAIN_PLAYLIST_ID
 const THERE_IS_NO_ACTIVE_ITEM = -1
 export default function MainPlaylist() {
 
-    const spotyManager = useSpotifyManager()
+    const {getPlaylist, setCurrentTrack } = useSpotifyManager()
+    const isLogged = useSessionState()
     const [actualPlaylist, setActualPlaylist] = useState(null)
-    const [activeItem, setItemActive] = useState(-1)
+    const [activeItem, setItemActive] = useState(THERE_IS_NO_ACTIVE_ITEM)
 
     useEffect(() => {
-        _getMainPlaylist(MAIN_PLAYLIST_ID)
+        if (isLogged)
+            _getMainPlaylist(MAIN_PLAYLIST_ID)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -21,8 +23,9 @@ export default function MainPlaylist() {
     }
 
     async function _getMainPlaylist(_playlist_id){
-        const _playlist = await spotyManager._getPlaylist(_playlist_id)
-        _setTracksToActualPlaylist(_playlist)
+        getPlaylist(_playlist_id)
+            .then( resp => _setTracksToActualPlaylist(resp))
+            .catch( err => console.error(err))
     } 
 
     function _renderActiveTrackContainer(_item, _pos){
@@ -49,11 +52,10 @@ export default function MainPlaylist() {
         </div>
     }
 
-    function _trackOnClick(_item, _pos){
-        spotyManager.setActualTrack(MAIN_PLAYLIST_URI, _pos)
-            .then( () => {
-                setItemActive(_pos)
-            })
+    function _trackOnClick(pos){
+        setCurrentTrack(MAIN_PLAYLIST_URI, pos)
+            .then( () => setItemActive(pos) )
+            .catch( err => console.error(err) )
     }
 
     function _renderTracks(){
@@ -61,7 +63,7 @@ export default function MainPlaylist() {
             <ol className='track-list'>
                 {actualPlaylist.map( (_item, _pos) => {
 
-                    return <div className='item' key={_pos} onClick={() => _trackOnClick(_item, _pos)}>
+                    return <div className='item' key={_pos} onClick={() => _trackOnClick(_pos)}>
                         {(_pos === activeItem)
                             ? _renderActiveTrackContainer(_item, _pos)
                             : _renderListItem(_item, _pos)
@@ -81,8 +83,12 @@ export default function MainPlaylist() {
                         <img src={mainPlaylistCover} alt=""/>
                     </div>
                     <div className="col-6 right">
-                        {(actualPlaylist !== null) && _renderTracks()}
-                    </div>
+                        { (isLogged) 
+                            ? (actualPlaylist)
+                                ?_renderTracks()
+                                : 'chargin' 
+                            : 'sig in'
+                        }</div>
                 </div>
             </div>
         </div>

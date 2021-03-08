@@ -4,7 +4,7 @@ const ACCESS_TOKEN = 'access_token'
 const REFRESH_TOKEN = 'refresh_token'
 const TOKEN_EXPIRATION = 'token_expiration'
 
-export default class SpotifyStorageManager extends LocalStorageManager{
+class SpotifyStorageManager extends LocalStorageManager{
 
     saveTokens(_newAccessToken, _newRefreshToken, _expiration){
         this.saveAccessToken(_newAccessToken, _expiration)
@@ -28,8 +28,9 @@ export default class SpotifyStorageManager extends LocalStorageManager{
         return this._getItem(TOKEN_EXPIRATION)
     }
 
-    clearLocalStorage(){
-        localStorage.clear()
+    thereIsRefreshToken(){
+        return this.getRefreshToken() !== null
     }
-
 } 
+
+export let spotyStorage = new SpotifyStorageManager()

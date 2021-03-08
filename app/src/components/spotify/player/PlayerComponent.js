@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react'
-import {useSpotifyManager} from '../SpotifyProvider'
+import {useSpotifyManager, useSessionState} from '../SpotifyProvider'
 import Player from './Player'
 import './player.sass'
 import { faFingerprint } from "@fortawesome/free-solid-svg-icons";
@@ -9,99 +9,124 @@ import PlayerDevicesButtons from './components/PlayerDevicesButtons'
 
 export default function PlayerComponent(){
 
-    const spotyManager = useSpotifyManager()
-    const player = new Player(spotyManager, onStateChange)
+    const { 
+        getAccessToken,
+        getCurrentPlayback, 
+        getDevices,
+        resume,
+        pause,
+        nextTrack,
+        transferPlayback
+    } = useSpotifyManager()
+    const isLogged = useSessionState()
+    const player = new Player(getAccessToken, onStateChange)
     const [devices, setDevices] = useState(null)
     const [isPlaying, setIsPlaying] = useState(false)
     let listener = null
+
     
     useEffect(() => {
-        player.initialize()
-            .then(_afterInitPlayer)
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    async function _afterInitPlayer(_device_id){
-        const _currentPlayback = await _getCurrentPlayback()
-        
-        if(_currentPlayback){
-            setIsPlaying(_currentPlayback.is_playing)
-            if(!_currentPlayback.is_playing)
-                _transferPlayer(_device_id)
-            else  
-                _refreshDevices()
-
+        if (isLogged){
+            player.initialize()
+                .then(_afterInitPlayer)
+                .catch( err => console.error(err))
         }
         else
-            _transferPlayer(_device_id)
+            player.disconnect()
+        return () => {
+            player.disconnect()
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLogged])
+
+    function _afterInitPlayer(device_id){
+        getCurrentPlayback()
+            .then( currentPlayback => {
+                if(currentPlayback){
+                    setIsPlaying(currentPlayback.is_playing)
+                    if(!currentPlayback.is_playing)
+                        _transferPlayer(device_id)
+                    else  
+                        _refreshDevices()
+
+                }
+                else
+                    _transferPlayer(device_id)
+            })
+            .catch( err => console.error(err))
+        
         
     }
 
-    async function _getCurrentPlayback(){
-        return await spotyManager.getCurrentPlayback()
-    }
-
-
     function _transferPlayer(_device_id){
-        spotyManager.transferUserPlayback(_device_id)
-            .then( async () => {    
-                _refreshDevices()
-            })
+        transferPlayback(_device_id)
+            .then( () => _refreshDevices() )
+            .catch( err => console.error(err) )
     }
 
 
     async function setListenerGetCurrenPlayback(){
         if(!listener){
             let _previusDevice = await _listenerFunction(null)
-            console.log(_previusDevice) 
             listener = window.setInterval( () => _listenerFunction(_previusDevice), 5000)
         }
     }
 
     async function _listenerFunction(_previusDevice){
-        let _currentState = await _getCurrentPlayback()
-        let _currentDevice = _currentState.device.name
-        if (_currentDevice !== _previusDevice && _previusDevice){
-            _refreshDevices()
-        }
-        setIsPlaying(_currentState.is_playing)
-        return _currentDevice
+        getCurrentPlayback()
+            .then( currentPlayback => {
+                let _currentDevice = currentPlayback.device.name
+                if (_currentDevice !== _previusDevice && _previusDevice){
+                    _refreshDevices()
+                }
+                setIsPlaying(currentPlayback.is_playing)
+                return _currentDevice
+            })
+            .catch( () => {
+                _clearListenerGetCurrenPlayback()
+            })
     }
 
     function _clearListenerGetCurrenPlayback(){
         if(listener){
             clearInterval(listener)
             listener = null
-            _refreshDevices()
         }
-
     }
 
     async function _refreshDevices(){
-        setDevices(await spotyManager.getDevicesInfo())
+        getDevices()
+            .then( devices => setDevices(devices))
+            .catch( () => player.disconnect())
     }
 
 
     async function onStateChange(_actualState){
-
-        if(_actualState){
-            setIsPlaying(!_actualState.paused)
+        if(isLogged) { 
+            if(_actualState){
+                setIsPlaying(!_actualState.paused)
+                _clearListenerGetCurrenPlayback()
+                if(listener)
+                    _refreshDevices()
+            }
+            else{
+                _refreshDevices()
+                setListenerGetCurrenPlayback()      
+            }
+        }
+        else 
             _clearListenerGetCurrenPlayback()
-        }
-        else{
-            _refreshDevices()
-            setListenerGetCurrenPlayback()      
-        }
     }
 
     function _pause(){
-        setIsPlaying(false)
-        spotyManager.pause()
+        pause()
+            .then( () => setIsPlaying(false))
     }
 
     function _resume(){
-        setIsPlaying(true)
-        spotyManager.resume()
+        resume()
+            .then( () => setIsPlaying(true))
     }
 
     function _showButtons(){
@@ -114,7 +139,7 @@ export default function PlayerComponent(){
                 <PlayerCenterButtons 
                     onResume={_resume}
                     onPause={_pause}
-                    onNextTrack={() => spotyManager.nextTrack()}
+                    onNextTrack={() => nextTrack}
                     isPlaying={isPlaying}
                 />
             </div>
@@ -140,9 +165,11 @@ export default function PlayerComponent(){
             <div className="container">
                 <div className="row">
 
-                    {(devices)
-                        ? _showButtons()
-                        : _showLoadingMessage()
+                    {(isLogged) 
+                        ? (devices)
+                            ? _showButtons()
+                            : _showLoadingMessage()
+                        : 'sig in'
                     }
 
                 </div>

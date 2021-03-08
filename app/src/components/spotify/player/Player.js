@@ -4,8 +4,8 @@ const PLAYER_NAME = 'Onda Atläntica'
 
 export default class Player {
 
-    constructor(spotyManager, getChangeDataToComponent){
-      this.spotyManager = spotyManager
+    constructor(getAccessToken, getChangeDataToComponent){
+      this.getAccessToken = getAccessToken
       this.webPlaybackInstance = null
       this.getChangeDataToComponent = getChangeDataToComponent
     }
@@ -17,29 +17,27 @@ export default class Player {
 
     _handleScriptLoad() {
       return new Promise( res => {
-          window.onSpotifyWebPlaybackSDKReady = () => {
+        window.onSpotifyWebPlaybackSDKReady = () => {
           this._initializeWebPlayback()
-              .then( () => {
-                this._handlePlayerErrors()
-                this.connect()
-                this._handlePlayerStatusUpdates()
-                res(this._handlePlayerReady())
-              })
+            .then( () => {
+              this._handlePlayerErrors()
+              this.connect()
+              this._handlePlayerStatusUpdates()
+              res(this._handlePlayerReady())
+            })
         }
       })
     }
     
-
     _initializeWebPlayback(){
-      return this.spotyManager
-        .getAccessToken()
-          .then((token)=> {
-            this.webPlaybackInstance = new window.Spotify.Player({
-              name: PLAYER_NAME,
-              getOAuthToken: callback => {callback(token)},
-              volume: 0.5
-            })
+      return this.getAccessToken()
+        .then((token)=> {
+          this.webPlaybackInstance = new window.Spotify.Player({
+            name: PLAYER_NAME,
+            getOAuthToken: callback => {callback(token)},
+            volume: 1
           })
+        })
     }
 
     _handlePlayerErrors(){
@@ -71,7 +69,12 @@ export default class Player {
     }
 
     disconnect(){
-      this.webPlaybackInstance.disconnect()
+      if(this.webPlaybackInstance){
+        console.log('se desconecto')
+        this.webPlaybackInstance.pause()
+        this.webPlaybackInstance.disconnect()
+        this.webPlaybackInstance = null
+      }
     }
 
 

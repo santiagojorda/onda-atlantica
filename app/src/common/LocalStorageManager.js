@@ -8,4 +8,8 @@ export default class LocalStorageManager{
     _getItem(name){
         return localStorage.getItem(name)
     }
+
+    clearLocalStorage(){
+        localStorage.clear()
+    }
 } 

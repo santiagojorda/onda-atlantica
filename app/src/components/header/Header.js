@@ -8,8 +8,7 @@ import SignInButton from '../spotify/signInButton/SignInButton';
 
 export default function Header() {
 
-    const {
-        requestAuthorization, 
+    const { 
         currentUser,
         disconnect
     } = useSpotifyManager()
